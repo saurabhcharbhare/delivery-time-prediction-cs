@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delivery Time Prediction | Saurabh Charbhare</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:#f2f3f5;color:#222}
+header{background:#1f2a44;color:#fff;padding:18px 16px}
+header h1{margin:0;font-size:1.35rem;font-weight:600}
+header p{margin:4px 0 0;font-size:.85rem;color:#c9d1e3}
+main{max-width:880px;margin:18px auto;padding:0 14px;display:flex;flex-wrap:wrap;gap:16px}
+section{background:#fff;border:1px solid #dcdfe4;border-radius:6px;padding:16px;flex:1 1 320px}
+h2{font-size:1rem;margin:0 0 10px;padding-bottom:8px;border-bottom:2px solid #f26b21}
+label{display:block;font-size:.82rem;color:#555;margin:10px 0 3px}
+input,select{width:100%;padding:9px;font-size:.95rem;border:1px solid #bfc4cc;border-radius:4px;background:#fff}
+button{margin-top:14px;width:100%;padding:11px;font-size:.95rem;background:#f26b21;color:#fff;border:0;border-radius:4px;cursor:pointer}
+.res{text-align:center;padding:14px 0}.res b{display:block;font-size:2.4rem;color:#1f2a44}
+.res span{font-size:.85rem;color:#666}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:8px}
+th,td{border:1px solid #dcdfe4;padding:6px;text-align:left}th{background:#eef0f3}
+ul{margin:6px 0 0;padding-left:18px;font-size:.85rem;line-height:1.6}
+footer{text-align:center;font-size:.78rem;color:#777;padding:14px}
+</style></head><body>
+<header><h1>Delivery Time Prediction</h1>
+<p>Machine Learning Project | Saurabh Charbhare</p></header>
+<main>
+<section><h2>Order details</h2>
+<label for="d">Distance (km)</label><input id="d" type="number" step="0.1" min="0.5" max="15" value="5">
+<label for="p">Food preparation time (minutes)</label><input id="p" type="number" min="5" max="35" value="15">
+<label for="t">Traffic</label><select id="t"><option value="0">Low</option><option value="1" selected>Medium</option><option value="2">High</option></select>
+<label for="w">Weather</label><select id="w"><option value="0">Clear</option><option value="1">Rain</option><option value="2">Fog</option></select>
+<label for="k">Time of day</label><select id="k"><option value="0">Normal hours</option><option value="1">Peak hours</option></select>
+<label for="e">Delivery partner experience (years)</label><input id="e" type="number" min="0" max="8" value="2">
+<button id="go" type="button" onclick="predict()">Predict delivery time</button></section>
+<section><h2>Prediction</h2>
+<div class="res"><span>Estimated delivery time</span><b id="min">--</b><span id="rng"></span></div>
+<h2 style="margin-top:14px">About the model</h2>
+<ul><li>Algorithm: Linear Regression (scikit-learn)</li>
+<li>Dataset: 5,000 simulated delivery records, 80% train / 20% test</li>
+<li>Inputs: distance, preparation time, traffic, weather, peak hours, partner experience</li></ul>
+<table><tr><th>Model</th><th>MAE</th><th>RMSE</th><th>R2</th></tr>
+<tr><td>Linear Regression</td><td>4.38</td><td>5.68</td><td>0.935</td></tr>
+<tr><td>Random Forest</td><td>6.58</td><td>8.33</td><td>0.861</td></tr></table></section>
+</main>
+<footer>Machine Learning Project | Saurabh Charbhare</footer>
+<script>
+var M={coef:[4.526,0.994,9.366,3.5067,4.1169,-0.5822],b:-10.8659,mae:4.4};
+function predict(){
+  var names=["d","p","t","w","k","e"],y=M.b,i,v;
+  for(i=0;i<6;i++){v=parseFloat(document.getElementById(names[i]).value);if(isNaN(v)){v=0;}y+=M.coef[i]*v;}
+  if(y<8){y=8;}
+  document.getElementById("min").innerHTML=Math.round(y)+" min";
+  document.getElementById("rng").innerHTML="Likely range: "+Math.round(y-M.mae)+" to "+Math.round(y+M.mae)+" minutes";
+}
+window.onload=function(){
+  var a=document.getElementsByTagName("input"),n=document.getElementsByTagName("select"),i;
+  for(i=0;i<a.length;i++){a[i].oninput=predict;}
+  for(i=0;i<n.length;i++){n[i].onchange=predict;}
+  predict();
+};
+</script></body></html>
